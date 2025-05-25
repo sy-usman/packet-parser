@@ -25,7 +25,10 @@ class ByteUnescaper:
                 unescaped.append(data[i])
                 i += 1
         return bytes(unescaped)
-
+# ---------------------------
+# Reading Message Headers
+# ---------------------------
+# Breaks down the first 26 characters of each message
 class HeaderParser:
     """Parse 26-byte command header structure"""
     HEADER_SIZE = 26
@@ -49,7 +52,10 @@ class HeaderParser:
             chr(int.from_bytes(serial_bytes[i:i+2], 'big')) 
             for i in range(2, 16, 2)  # Skip first 2 dummy bytes
         ).strip('\x00')
-
+# ---------------------------
+# Checking System Status
+# ---------------------------
+# Reads the machine's current state from 2 status bytes
 class StatusParser:
     """Parse 2-byte status field with bitwise operations"""
     @staticmethod
@@ -105,7 +111,7 @@ class LogDecoder:
             f"{self._bcd_to_int(data[5]):02}:"
             f"{self._bcd_to_int(data[6])*100 + self._bcd_to_int(data[7]):04}"
         )
-
+############BMR tags##########
 class MonitorDecoder:
     """Decode monitor data using BMR tag mappings"""
     TAG_MAP = {
@@ -283,7 +289,7 @@ class PacketProcessor:
         except Exception as e:
             output.append(f"Monitor decoding error: {str(e)}")
 
-# Example usage
+####usage of given raw hex strings
 if __name__ == "__main__":
     examples = {
         "Example1": (
@@ -291,7 +297,6 @@ if __name__ == "__main__":
             "00 00 00 00 01 00 00 49 30 20 25 05 09 19 25 00 10 12 00 10 12 00 00 00 10 13 00 00 00 00 00 00 04 "
             "00 00 00 00 00 05 00 00 00 00 00 06 00 00 00 00 00 07 AB 10 13 13 03"
         ),
-        # Add other examples here following the same pattern
        "Example2": ("02 40 1A 45 01 00 20 00 32 00 31 00 35 00 35 00 31 00 30 00 39 00 7A 00 05 00 30 81 00 00 00 00 00 00"
                     "00 00 00 00 01 00 00 49 30 20 25 05 09 19 25 00 10 12 00 10 12 00 00 00 10 13 00 00 00 00 00 00 00 04"
                     "00 00 00 00 00 05 00 00 00 00 00 06 00 00 00 00 00 07 AB 10 13 2D 03"),
